@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Dispalys To infinity and beyond with a sleep 2 in each iteration
+# Displays I am invisible when recieving SIGTERM signal
+
+trap 'echo "I am invincible!!!"'
+
+while true; do
+	echo "To infinity and beyond"
+	sleep 2
+done
