@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Displays number 1 to 20
+# Displays "bad luck from china in 4th count"
+# Displays "badluck from Japan" in 8th count
+# Displays "badluck from Italy" in 17th count
+
+i=0
+
+while [ $i -lt 20 ]
+do
+	case $i in
+		"4") echo "$i bad luck from China";;
+		"9") echo "$i bad luck from Japan";;
+		"17") echo "$i bad luck from Italy";;
+		*) echo $i;;
+	esac
+	((i++))
+done
