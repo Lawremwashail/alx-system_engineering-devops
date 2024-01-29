@@ -3,9 +3,9 @@
 # Uses while loop and if statement
 # if statement displays Hi in 9th iteration
 
-i=1
+i=0
 
-while [ $i -le 10 ]
+while [ $i -lt 10 ]
 do
 	if [ $i -eq 9 ]
 	then
