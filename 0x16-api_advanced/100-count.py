@@ -49,13 +49,16 @@ def count_words(subreddit, word_list, after=None, counts={}):
         for word in word_list:
             word_lower = word.lower()
             if word_lower in title_words:
-                counts[word_lower] = counts.get(word_lower, 0) + title_words.count(word_lower)
+                counts[word_lower] = counts.get(word_lower, 0)
+                + title_words.count(word_lower)
 
     after = data.get("after")
 
     if after:
         count_words(subreddit, word_list, after, counts)
     else:
-        sorted_counts = sorted(counts.items(), key=lambda x: (-x[1], x[0].lower()))
+        sorted_counts = sorted(
+                counts.items(),
+                key=lambda x: (-x[1], x[0].lower()))
         for word, count in sorted_counts:
             print("{}: {}".format(word, count))
