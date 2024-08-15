@@ -24,36 +24,32 @@ def count_words(subreddit, word_list, after=None, counts={}):
         return
 
     headers = {"User-Agent": "your_bot:v1.0 (by /u/yourusername)"}
-    params = {"limit": 100}
-
-    if after:
-        params["after"] = after
+    params = {"limit": 100, "after": after}
 
     response = requests.get(
-            "https://www.reddit.com/r/{subreddit}/hot.json",
+            f"https://www.reddit.com/r/{subreddit}/hot.json",
             headers=headers,
             params=params,
             allow_redirects=False
     )
 
     if response.status_code != 200:
-        print("Error: Status code {}".format(response.status_code))
         return
 
     try:
         data = response.json().get("data", {})
         children = data.get("children", [])
     except ValueError:
-        print("Error: Unable to parse JSON")
         return
 
     for child in children:
         title = child.get("data", {}).get("title", "").lower()
+        title_words = title.split()
 
         for word in word_list:
             word_lower = word.lower()
-            if word_lower in title:
-                counts[word_lower] = counts.get(word_lower, 0) + title.count(word_lower)
+            if word_lower in title_words:
+                counts[word_lower] = counts.get(word_lower, 0) + title_words.count(word_lower)
 
     after = data.get("after")
 
