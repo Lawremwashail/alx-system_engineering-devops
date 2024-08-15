@@ -23,8 +23,8 @@ def recurse(subreddit, hot_list=[], after="", count=0):
 
     Returns:
         list or None: A list of titles of hot articles for the
-        given subreddit. 
-                      Returns None if the subreddit is invalid or
+        given subreddit.
+        Returns None if the subreddit is invalid or
                       no results are found.
     """
 
