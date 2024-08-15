@@ -1,53 +1,65 @@
 #!/usr/bin/python3
 """
-function that queries the Reddit API, parses the title of all hot articles,
+Function that queries the Reddit API, parses the title of all hot articles,
 and prints a sorted count of given keywords
 """
-
-
 import requests
 
 
+def count_words(subreddit, word_list, after=None, counts={}):
+    """
+    Counts the occurrences of specified words in the titles of hot posts
+    in a given subreddit.
 
-def count_words(subreddit, words, instances={}, after="", count=0):
-    headers = {"User-Agent": "reddit:top_ten:v1.0 (by /u/yourusername)"}
-    params = {
-            'after': after,
-            'count': count,
-            'limit': 100
-    }
+    Args:
+        subreddit (str): The subreddit to search.
+        word_list (list): A list of words to count.
+        after (str, optional): A pagination parameter for Reddit API.
+        counts (dict, optional): A dictionary to store word counts.
+
+    Returns:
+        None: Prints the counts of each word in the subreddit titles.
+    """
+    if not word_list or not subreddit:
+        return
+
+    headers = {"User-Agent": "your_bot:v1.0 (by /u/yourusername)"}
+    params = {"limit": 100}
+
+    if after:
+        params["after"] = after
+
     response = requests.get(
-            "https://www.reddit.com/r/{}/hot.json".format(subreddit),
-            headers=headers, params=params, allow_redirects=False
+            "https://www.reddit.com/r/{subreddit}/hot.json",
+            headers=headers,
+            params=params,
+            allow_redirects=False
     )
+
+    if response.status_code != 200:
+        print("Error: Status code {}".format(response.status_code))
+        return
+
     try:
-        results = response.json()
-        if response.status_code == 404:
-            raise Exception
-        except Exception:
-            print("")
-            return
+        data = response.json().get("data", {})
+        children = data.get("children", [])
+    except ValueError:
+        print("Error: Unable to parse JSON")
+        return
 
-    results = results.get("data")
-    after = results.get("after")
-    count = results.get("dist")
+    for child in children:
+        title = child.get("data", {}).get("title", "").lower()
 
-    for child in results.get("children"):
-        title = child.get("data").get("title").lower().split()
-        for word in words:
-            if word.lower() in title:
-                times = title.count(word.lower())
-                if instances.get(word.lower()) is None:
-                    instances[word.lower()] = times
-                else:
-                    instances[word.lower()] += times
+        for word in word_list:
+            word_lower = word.lower()
+            if word_lower in title:
+                counts[word_lower] = counts.get(word_lower, 0) + title.count(word_lower)
 
-        if after is None:
-            if len(instances) == 0:
-                print("")
-                return
+    after = data.get("after")
 
-            instances = sorted(instances.items(), key=lambda kv: (-kv[1], kv[0]))
-            [print("{}: {}".format(k, v)) for k, v in instances]
-        else:
-            count_words(subreddit, words, instances, after, count)
+    if after:
+        count_words(subreddit, word_list, after, counts)
+    else:
+        sorted_counts = sorted(counts.items(), key=lambda x: (-x[1], x[0].lower()))
+        for word, count in sorted_counts:
+            print("{}: {}".format(word, count))
