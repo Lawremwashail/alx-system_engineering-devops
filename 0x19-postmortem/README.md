@@ -50,3 +50,4 @@ Implement more granular alerts for database performance metrics, such as query e
 Documentation: 	
 Document the issue and resolution process to ensure that similar problems can be quickly identified and resolved in the future.
 
+https://docs.google.com/document/d/1BQfhkdt0m31iLpKy6pBT5KDJGwmSXHRSBQvoYIT8MLE/edit?usp=sharing
